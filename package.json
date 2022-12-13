@@ -6,13 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "patch": "npm run build && npm version patch && npm publish --scope public && git push --tags",
-    "minor": "npm run build && npm version minor && npm publish --scope public && git push --tags",
-    "major": "npm run build && npm version major && npm publish --scope public && git push --tags"
+    "patch": "npm run build && npm version patch && npm publish --access public && git push --tags",
+    "minor": "npm run build && npm version minor && npm publish --access public && git push --tags",
+    "major": "npm run build && npm version major && npm publish --access public && git push --tags"
   },
   "author": "dangermonk",
   "license": "ISC",
   "dependencies": {
     "typescript": "^4.9.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DangermonK/dda-ray.git"
+  },
+  "keywords": [
+    "raycast"
+  ],
+  "devDependencies": {}
 }

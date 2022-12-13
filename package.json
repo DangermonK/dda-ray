@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "patch": "npm version patch && npm publish --scope public",
-    "minor": "npm version minor && npm publish --scope public",
-    "major": "npm version major && npm publish --scope public"
+    "build": "npx tsc",
+    "patch": "npm run build && npm version patch && npm publish --scope public && git push --tags",
+    "minor": "npm run build && npm version minor && npm publish --scope public && git push --tags",
+    "major": "npm run build && npm version major && npm publish --scope public && git push --tags"
   },
   "author": "dangermonk",
   "license": "ISC",

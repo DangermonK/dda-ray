@@ -130,7 +130,7 @@ export class DDALine extends DDARay {
 
 		return {
 			...output,
-			end: output.cell === this._target;
+			end: output.cell === this._target
 		}
 	}
 

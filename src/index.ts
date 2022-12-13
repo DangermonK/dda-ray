@@ -76,52 +76,6 @@ export class DDARay {
 		};
 	}
 
-	nextCell(): IVector {
-		let output: IVector;
-		if(this._step.x < this._step.y) {
-			const sV = scaleVector(this._vec, this._step.x);
-			this._step.x += this._vectorAxisLength.x;
-			output = {
-				x: this._gridPos.x,
-				y: this._gridPos.y
-			};
-			this._gridPos.x += this._dir.x;
-		} else {
-			const sV = scaleVector(this._vec, this._step.y);
-			this._step.y += this._vectorAxisLength.y;
-			output = {
-				x: this._gridPos.x,
-				y: this._gridPos.y
-			};
-			this._gridPos.y += this._dir.y;
-		}
-
-		return output;
-	}
-
-	nextPoint(): IVector {
-		let output: IVector;
-		if(this._step.x < this._step.y) {
-			const sV = scaleVector(this._vec, this._step.x);
-			this._step.x += this._vectorAxisLength.x;
-			output = {
-				x: this._pos.x + sV.x,
-				y: this._pos.y + sV.y
-			};
-			this._gridPos.x += this._dir.x;
-		} else {
-			const sV = scaleVector(this._vec, this._step.y);
-			this._step.y += this._vectorAxisLength.y;
-			output = {
-				x: this._pos.x + sV.x,
-				y: this._pos.y + sV.y
-			};
-			this._gridPos.y += this._dir.y;
-		}
-
-		return output;
-	}
-
 	next(): { pos: IVector, cell: IVector } {
 		let output: { pos: IVector, cell: IVector };
 		if(this._step.x < this._step.y) {
@@ -151,6 +105,33 @@ export class DDARay {
 		}
 
 		return output;
+	}
+
+}
+
+export class DDALine extends DDARay {
+
+	private readonly _target: IVector;
+
+	constructor(pos: IVector, target: IVector) {
+		super(pos, {
+			x: target.x - pos.x,
+			y: target.y - pos.y
+		});
+
+		this._target =  {
+			x: Math.floor(target.x),
+			y: Math.floor(target.y)
+		}
+	}
+
+	next(): { pos: IVector; cell: IVector; end: boolean; } {
+		const output = super.next();
+
+		return {
+			...output,
+			end: output.cell === this._target;
+		}
 	}
 
 }

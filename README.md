@@ -20,7 +20,7 @@ const position = {
 };
 
 const vector = {
-	x: 2,
+    x: 2, 
     y: 3
 }
 

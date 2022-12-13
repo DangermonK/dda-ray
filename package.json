@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "patch": "npm version patch && npm publish --scope public",
     "minor": "npm version minor && npm publish --scope public",
-    "major": "npm version major && npm publish --scope public",
+    "major": "npm version major && npm publish --scope public"
+  },
   "author": "dangermonk",
   "license": "ISC",
   "dependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@dangermonk/dda-ray",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "step based Digital Differential Analyzer (DDA) algorithm",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

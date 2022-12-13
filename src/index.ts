@@ -99,7 +99,7 @@ export class DDARay {
 		return output;
 	}
 
-	next(): IVector {
+	nextPoint(): IVector {
 		let output: IVector;
 		if(this._step.x < this._step.y) {
 			const sV = scaleVector(this._vec, this._step.x);
@@ -115,6 +115,37 @@ export class DDARay {
 			output = {
 				x: this._pos.x + sV.x,
 				y: this._pos.y + sV.y
+			};
+			this._gridPos.y += this._dir.y;
+		}
+
+		return output;
+	}
+
+	next(): { pos: IVector, cell: IVector } {
+		let output: { pos: IVector, cell: IVector };
+		if(this._step.x < this._step.y) {
+			const sV = scaleVector(this._vec, this._step.x);
+			this._step.x += this._vectorAxisLength.x;
+			output = {
+				pos: {
+					x: this._pos.x + sV.x,
+					y: this._pos.y + sV.y},
+				cell: {
+					x: this._gridPos.x,
+					y: this._gridPos.y}
+			};
+			this._gridPos.x += this._dir.x;
+		} else {
+			const sV = scaleVector(this._vec, this._step.y);
+			this._step.y += this._vectorAxisLength.y;
+			output = {
+				pos: {
+					x: this._pos.x + sV.x,
+					y: this._pos.y + sV.y},
+				cell: {
+					x: this._gridPos.x,
+					y: this._gridPos.y}
 			};
 			this._gridPos.y += this._dir.y;
 		}

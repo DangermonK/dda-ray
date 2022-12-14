@@ -30,7 +30,7 @@ function vectorYLength(vec: IVector) {
 
 export class DDARay {
 
-	private _pos: IVector;
+	protected _pos: IVector;
 	private _posLast: IVector;
 	private readonly _vec: IVector;
 
@@ -46,7 +46,6 @@ export class DDARay {
 		this._pos = pos;
 		this._posLast = pos;
 		this._vec = vec;
-
 		this._gridPos = {
 			x: Math.floor(pos.x),
 			y: Math.floor(pos.y)
@@ -67,7 +66,7 @@ export class DDARay {
 
 		this._vectorAxisLength = {
 			x: vectorXLength(vec),
-			y: vectorXLength(vec),
+			y: vectorYLength(vec),
 		};
 
 		this._step = {
@@ -78,6 +77,7 @@ export class DDARay {
 
 	next(): { pos: IVector, cell: IVector } {
 		let output: { pos: IVector, cell: IVector };
+
 		if(this._step.x < this._step.y) {
 			const sV = scaleVector(this._vec, this._step.x);
 			this._step.x += this._vectorAxisLength.x;
@@ -111,7 +111,8 @@ export class DDARay {
 
 export class DDALine extends DDARay {
 
-	private readonly _target: IVector;
+	private readonly _distance: number;
+	private _end: boolean = false;
 
 	constructor(pos: IVector, target: IVector) {
 		super(pos, {
@@ -119,18 +120,23 @@ export class DDALine extends DDARay {
 			y: target.y - pos.y
 		});
 
-		this._target =  {
-			x: Math.floor(target.x),
-			y: Math.floor(target.y)
-		}
+		this._distance = this.calculateDistance(pos, target);
+	}
+
+	private calculateDistance(origin: IVector, target: IVector) {
+		const dx = origin.x - target.x;
+		const dy = origin.y - target.y;
+		return Math.sqrt(dx*dx + dy*dy);
 	}
 
 	next(): { pos: IVector; cell: IVector; end: boolean; } {
 		const output = super.next();
 
+		const distance = this.calculateDistance(output.pos, this._pos);
+		this._end = this._distance < distance;
 		return {
 			...output,
-			end: output.cell === this._target
+			end: this._end
 		}
 	}
 

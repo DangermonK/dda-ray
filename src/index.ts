@@ -34,6 +34,8 @@ export class DDARay {
 	private _posLast: IVector;
 	private readonly _vec: IVector;
 
+	private readonly _maxLength: number;
+
 	private _gridPos: IVector;
 
 	private readonly _dir: IVector;
@@ -42,7 +44,7 @@ export class DDARay {
 
 	private _step: IVector;
 
-	constructor(pos: IVector, vec: IVector) {
+	constructor(pos: IVector, vec: IVector, maxLength: number) {
 		this._pos = pos;
 		this._posLast = pos;
 		this._vec = vec;
@@ -50,6 +52,8 @@ export class DDARay {
 			x: Math.floor(pos.x),
 			y: Math.floor(pos.y)
 		};
+
+		this._maxLength = maxLength;
 
 		const cellPos = {
 			x: pos.x - this._gridPos.x,
@@ -75,32 +79,25 @@ export class DDARay {
 		};
 	}
 
-	next(): { pos: IVector, cell: IVector } {
-		let output: { pos: IVector, cell: IVector };
+	next(): { pos: IVector, cell: IVector, stop: boolean } {
+
+		const scalar = Math.min(this._step.x, this._step.y, this._maxLength);
+		const sV = scaleVector(this._vec, scalar);
+		const output = {
+			pos: {
+				x: this._pos.x + sV.x,
+				y: this._pos.y + sV.y},
+			cell: {
+				x: this._gridPos.x,
+				y: this._gridPos.y},
+			stop: scalar === this._maxLength
+		};
 
 		if(this._step.x < this._step.y) {
-			const sV = scaleVector(this._vec, this._step.x);
 			this._step.x += this._vectorAxisLength.x;
-			output = {
-				pos: {
-					x: this._pos.x + sV.x,
-					y: this._pos.y + sV.y},
-				cell: {
-					x: this._gridPos.x,
-					y: this._gridPos.y}
-			};
 			this._gridPos.x += this._dir.x;
 		} else {
-			const sV = scaleVector(this._vec, this._step.y);
 			this._step.y += this._vectorAxisLength.y;
-			output = {
-				pos: {
-					x: this._pos.x + sV.x,
-					y: this._pos.y + sV.y},
-				cell: {
-					x: this._gridPos.x,
-					y: this._gridPos.y}
-			};
 			this._gridPos.y += this._dir.y;
 		}
 
@@ -111,33 +108,16 @@ export class DDARay {
 
 export class DDALine extends DDARay {
 
-	private readonly _distance: number;
-	private _end: boolean = false;
-
 	constructor(pos: IVector, target: IVector) {
-		super(pos, {
+		const vector = {
 			x: target.x - pos.x,
 			y: target.y - pos.y
-		});
-
-		this._distance = this.calculateDistance(pos, target);
-	}
-
-	private calculateDistance(origin: IVector, target: IVector) {
-		const dx = origin.x - target.x;
-		const dy = origin.y - target.y;
-		return Math.sqrt(dx*dx + dy*dy);
-	}
-
-	next(): { pos: IVector; cell: IVector; end: boolean; } {
-		const output = super.next();
-
-		const distance = this.calculateDistance(output.pos, this._pos);
-		this._end = this._distance < distance;
-		return {
-			...output,
-			end: this._end
 		}
+		super(pos, vector, magnitude(vector));
+	}
+
+	next(): { pos: IVector; cell: IVector; stop: boolean; } {
+		return super.next();
 	}
 
 }
